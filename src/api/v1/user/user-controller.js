@@ -6,10 +6,10 @@ const neo4j = require('neo4j-driver'),
 
 
 exports.register = (req, res, next) => {
-	{ username, password } = req.body;
+	const { username, password } = req.body;
 
 	if(!username) {
-		throw {username: 'This field is required', status: 400}
+		return next(new Error('This field is required'));
 	}
 
 	if(!password) {
