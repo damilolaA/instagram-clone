@@ -1,9 +1,7 @@
 require('dotenv').config();
-const http = require('http');
+var app = require('./src/server/server.js'),
+	port = require('./config/config.js').port;
 
-var app = http.createServer(function(req, res) {
-	res.statusCode = 200;
-	res.end('Hello World');
-});
+console.log('Application started on port ' + port);
 
-app.listen(4000);
+app.listen(port);

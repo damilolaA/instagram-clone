@@ -2,11 +2,13 @@ version: "2"
 
 services:
   neo4j: 
-    image: neo4j:latest
+    image: neo4j:3.3.0
     environment: 
       - NEO4J_AUTH=neo4j/process.env.NEO4J_PASS
     volumes:
-      - "c:/Users/services/instagram/data:/data"
+      - "c:/Users/services/instagram/neo4j/data:/data"
+      - "c:/Users/services/instagram/neo4j/conf:/var/lib/neo4j/conf"
+      - "c:/Users/services/instagram/neo4j/logs:/var/lib/neo4j/logs"
     ports:
       - "7474:7474"
       - "7687:7687"
