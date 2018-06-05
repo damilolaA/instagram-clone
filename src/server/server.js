@@ -12,7 +12,6 @@ app.use(morgan('dev'));
 app.use('/api/v1/', api);
 
 app.use((err, req, res, next) => {
-    console.log(err);
     res.status(err.status).send(err.message);
     next();
 })

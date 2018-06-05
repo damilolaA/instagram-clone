@@ -9,11 +9,11 @@ exports.register = (req, res, next) => {
 	const { username, password } = req.body;
 
 	if(!username) {
-		return next(new Error('This field is required'));
+		return next({status: 400, message: 'Username field is required'});
 	}
 
 	if(!password) {
-		throw {password: 'This field is required', status: 400}
+		return next({status:400, message: 'Password field is required'});
 	}
 
 	userModel.registerUser(session, username, password)
