@@ -10,7 +10,7 @@ exports.addPost = (req, res, next) => {
 
 		postBody.image = path;
 	}
-
+	
 	const { image, user, caption } = postBody;	
 
 	postModel.addPost(session, user, image, caption)
