@@ -1,25 +1,19 @@
 const postModel = require('./post-model.js'),
-			neo4j = require('neo4j-driver'),
-			{ neo4jPass } = require('../../../../config/config.js'),
-	  	driver = neo4j.v1.driver("bolt://192.168.99.100", neo4j.v1.auth.basic('neo4j', neo4jPass)),
-	  	session = driver.session();
-
+			session = require('../initializeNeo4j.js');
 
 exports.addPost = (req, res, next) => {
-	
-	console.log(req.file);
 
-	const { image, user, caption } = req.body;
+	const postBody = req.body;
 
-	if(!image) {
-		return next({status: 400, message: 'Image field is required'})
+	if(req.file) {	
+		let { path } = req.file;
+
+		postBody.image = path;
 	}
 
-	if(!user) {
-		return next({status: 400, message: 'User field is required'})
-	}
+	const { image, user, caption } = postBody;	
 
-	postModel.addPost(session, image, user, caption)
+	postModel.addPost(session, user, image, caption)
 		.then(result => {
 			res.status(200).json(result)
 		})

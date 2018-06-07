@@ -1,11 +1,11 @@
 const uuid = require('uuid/v4');
 
-exports.addPost = (session, user, image, caption) => {
+exports.addPost = (session, userId, imagePath, caption) => {
 
-	return session.run('CREATE (post:Post {id:{id}, user:{user}, image:{image}, caption:{caption}, date: {date}}) RETURN USER', {
+	return session.run('CREATE (post:Post {id:{id}, userId:{userId}, imagePath:{imagePath}, caption:{caption}, date: {date}}) RETURN post', {
 		id: uuid(),
-		user: user,
-		image: image,
+		userId: userId,
+		imagePath: imagePath,
 		caption: caption,
 		date: Date.now()
 	})
