@@ -5,14 +5,14 @@ var express   = require('express'),
     api       = require('../api/api.js');
 
 app.use(bps.json());
-app.use(bps.urlencoded({extended: true}));
+app.use(bps.urlencoded({ extended: true }));
 
 app.use(morgan('dev'));
 
 app.use('/api/v1/', api);
 
 app.use((err, req, res, next) => {
-    res.status(err.status).send(err.message);
+    res.status(500).send(err.message);
     next();
 })
 
