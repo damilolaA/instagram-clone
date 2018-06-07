@@ -1,6 +1,8 @@
 const uuid4 = require('uuid/v4'),
 			bcrypt = require('bcrypt-nodejs'),
-			_ = require('lodash');
+			jwt = require('jsonwebtoken'),
+			_ = require('lodash'),
+			{ JWT_SECRET } = require('../../../../config/config.js');
 
 const encryptPassword = (plainPassword) => {
 	let salt = bcrypt.genSaltSync(10);
@@ -10,6 +12,14 @@ const encryptPassword = (plainPassword) => {
 
 const authenticatePassword = (plainPassword, hash) => {
 	return bcrypt.compareSync(plainPassword, hash);
+}
+
+const signToken = (userId) => {
+	return jwt.sign(
+		{id: userId},
+		JWT_SECRET,
+		{expiresIn: '24hr'}
+	);
 }
 
 exports.registerUser = (session, username, password) => {
@@ -52,7 +62,10 @@ exports.loginUser = (session, username, plainPassword) => {
 			if(!authenticatePassword(plainPassword, password)) {
 				throw {message: "password is not correct", status:403}
 			}
-			return {token: id}
+
+			let token = signToken(id);
+
+			return {token: token}
 		}
 	});
 }

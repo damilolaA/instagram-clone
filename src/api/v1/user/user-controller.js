@@ -41,6 +41,6 @@ exports.login = (req, res, next) => {
 			res.status(200).json(result);
 		})
 		.catch(error => {
-			res.status(400).send(error);
+			return next({status: 400, message: 'Error authenticating user'});
 		})
 }
