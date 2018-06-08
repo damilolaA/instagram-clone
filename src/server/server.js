@@ -12,7 +12,7 @@ app.use(morgan('dev'));
 app.use('/api/v1/', api);
 
 app.use((err, req, res, next) => {
-    res.status(500).send(err.message);
+    res.status(err.status).send(err.message);
     next();
 })
 

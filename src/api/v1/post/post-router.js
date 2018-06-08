@@ -1,10 +1,11 @@
 const express = require('express'),
 			Router  = express.Router(),
 			postController = require('./post-controller.js'),
-	  	uploadImage = require('../fileUploads.js');
+	  	uploadImage = require('../fileUploads.js'),
+	  	authController = require('../auth/auth-controller.js');
 
 Router.route('/')
-	.post(uploadImage, postController.addPost);
+	.post(authController.verifyUser, uploadImage, postController.addPost);
 
 
 module.exports = Router;

@@ -1,8 +1,6 @@
 const uuid4 = require('uuid/v4'),
 			bcrypt = require('bcrypt-nodejs'),
-			jwt = require('jsonwebtoken'),
-			_ = require('lodash'),
-			{ JWT_SECRET } = require('../../../../config/config.js');
+			_ = require('lodash');
 
 const encryptPassword = (plainPassword) => {
 	let salt = bcrypt.genSaltSync(10);
@@ -10,90 +8,32 @@ const encryptPassword = (plainPassword) => {
 	return bcrypt.hashSync(plainPassword, salt);
 }
 
-const authenticatePassword = (plainPassword, hash) => {
-	return bcrypt.compareSync(plainPassword, hash);
-}
-
-const signToken = (userId) => {
-	return jwt.sign(
-		{id: userId},
-		JWT_SECRET,
-		{expiresIn: '24hr'}
-	);
-}
-
 exports.registerUser = (session, username, email, password) => {
-	return session.run('MATCH (user:User {username: {username}}) RETURN user', {username:username})
-		.then(result => {
-			if(!_.isEmpty(result.records)) {
-
-				throw {error: 'username already in use', status:400};
-			} else {
-
-				return session.run('CREATE (user:User {id: {id}, username:{username}, email:{email}, password:{password}, date:{date}}) RETURN user', {
-					id: uuid4(),
-					username: username,
-					email: email,
-					password: encryptPassword(password),
-					date: Date.now()
-				})
-				.then(result => {
-					return result.records[0].get('user');
-				})
-				.catch(error => {
-					throw new Error(error);
-				})
-			}
-		})
-}
-
-exports.verifyUser = (session, token) => {
-
-	return new Promise((resolve, reject) => {
-
-		jwt.verify(token, JWT_SECRET, (err, decoded) => {
-			if(err) {
-				reject(err)
-			} else {
-				let { id } = decoded;
-
-				session.run('MATCH (user:User { id:{id} }) RETURN user', {
-					id: id
-				})
-				.then(result => {
-					resolve(result.records[0].get('user'))
-				})
-				.catch(err => {
-					reject(err)
-				})
-			}
-		})
+	console.log('userModel');
+	return session.run('MATCH (user:User) WHERE user.email={email} OR user.username={username} RETURN user', {
+		username:username,
+		email: email
 	})
-}
-
-exports.loginUser = (session, username, plainPassword) => {
-	return session.run('MATCH (user:User {username: {username}}) RETURN user', {
-		username: username,
-		password: plainPassword
-	})
-	.then(result => {
-		if(_.isEmpty(result.records)) {
-			throw {message: 'Username does not exist', status:400};
+	.then(result => { 
+		if(!_.isEmpty(result.records)) {
+			throw new Error('username or email address already in use');
 		} else {
-
-			let user = result.records[0].get('user'),
-			{ password, id } = user.properties;
-
-			if(!authenticatePassword(plainPassword, password)) {
-				throw {message: "password is not correct", status:403}
-			}
-
-			let token = signToken(id);
-
-			return {token: token}
+			return session.run('CREATE (user:User { id:{id}, username:{username}, email:{email}, password:{password}, date:{date} }) RETURN user', {
+				id: uuid4(),
+				username: username,
+				email: email,
+				password: encryptPassword(password),
+				date: Date.now()
+			})
+			.then(result => {
+				return result.records[0].get('user');
+			})
+			.catch(error => {
+				console.log(error);
+				throw new Error('could not create a new user');
+			})
 		}
 	})
-	.catch(err => {
-		return new Error(err);
-	})
 }
+
+
