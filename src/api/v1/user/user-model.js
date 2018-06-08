@@ -47,17 +47,27 @@ exports.registerUser = (session, username, email, password) => {
 		})
 }
 
-exports.getUser = (session, userId) => {
+exports.verifyUser = (session, token) => {
 
-	return session.run('MATCH (user:User { id:{userId} }) RETURN user', {
-		userId: userId
-	})
-	.then(result => {
-		console.log(result);
-		return result.records[0].get('user')
-	})
-	.catch(err => {
-		return new Error(err);
+	return new Promise((resolve, reject) => {
+
+		jwt.verify(token, JWT_SECRET, (err, decoded) => {
+			if(err) {
+				reject(err)
+			} else {
+				let { id } = decoded;
+
+				session.run('MATCH (user:User { id:{id} }) RETURN user', {
+					id: id
+				})
+				.then(result => {
+					resolve(result.records[0].get('user'))
+				})
+				.catch(err => {
+					reject(err)
+				})
+			}
+		})
 	})
 }
 

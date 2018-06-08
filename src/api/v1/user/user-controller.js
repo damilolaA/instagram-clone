@@ -27,14 +27,27 @@ exports.register = (req, res, next) => {
 
 exports.user = (req, res, next) => {
 
-	var userId = req.params.id;
+	if(!req.user) {
+		return next(new Error('could not fetch user'));
+	}
 
-	userModel.getUser(session, userId)
+	res.status(200).json(req.user);
+}
+
+exports.verifyUser = (req, res, next) => {
+
+	if(!req.headers.authorization) {
+		return next(new Error('please provide authorization token'));
+	}
+
+	userModel.verifyUser(session, req.headers.authorization)
 		.then(user => {
-			res.status(200).json(user)
+			let { properties } = user;
+			req.user = properties;
+			next();
 		})
 		.catch(err => {
-			return next(new Error(err))
+			return next(new Error(err));
 		})
 }
 
