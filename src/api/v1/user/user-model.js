@@ -22,7 +22,7 @@ const signToken = (userId) => {
 	);
 }
 
-exports.registerUser = (session, username, password) => {
+exports.registerUser = (session, username, email, password) => {
 	return session.run('MATCH (user:User {username: {username}}) RETURN user', {username:username})
 		.then(result => {
 			if(!_.isEmpty(result.records)) {
@@ -30,9 +30,10 @@ exports.registerUser = (session, username, password) => {
 				throw {error: 'username already in use', status:400};
 			} else {
 
-				return session.run('CREATE (user:User {id: {id}, username:{username}, password:{password}, date:{date}}) RETURN user', {
+				return session.run('CREATE (user:User {id: {id}, username:{username}, email:{email}, password:{password}, date:{date}}) RETURN user', {
 					id: uuid4(),
 					username: username,
+					email: email,
 					password: encryptPassword(password),
 					date: Date.now()
 				})
@@ -44,6 +45,20 @@ exports.registerUser = (session, username, password) => {
 				})
 			}
 		})
+}
+
+exports.getUser = (session, userId) => {
+
+	return session.run('MATCH (user:User { id:{userId} }) RETURN user', {
+		userId: userId
+	})
+	.then(result => {
+		console.log(result);
+		return result.records[0].get('user')
+	})
+	.catch(err => {
+		return new Error(err);
+	})
 }
 
 exports.loginUser = (session, username, plainPassword) => {
@@ -67,5 +82,8 @@ exports.loginUser = (session, username, plainPassword) => {
 
 			return {token: token}
 		}
-	});
+	})
+	.catch(err => {
+		return new Error(err);
+	})
 }

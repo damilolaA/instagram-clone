@@ -2,6 +2,9 @@ const express = require('express'),
 	  Router = express.Router(),
 	  userController = require('./user-controller.js');
 
+Router.route('/:id')
+	.get(userController.user);
+
 Router.route('/register')
 	.post(userController.register);
 
