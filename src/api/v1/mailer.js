@@ -20,7 +20,7 @@ const sendMail = (email) => {
     from: 'adiodamilola@yahoo.com',
     to: email,
     subject: 'Successful Instagram-Clone Registration',
-    html: '<p>Welcome to Instagram-Clone. Enjoy</p>';
+    html: '<p>Welcome to Instagram-Clone. Enjoy</p>'
 	};
 
 	return new Promise((resolve, reject) => {

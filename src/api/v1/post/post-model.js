@@ -13,6 +13,19 @@ exports.addPost = (session, userId, imagePath, caption) => {
 		return post.records[0].get('post');
 	})
 	.catch(err => {
-		throw new Error(err);
+		return new Error(err);
+	})
+}
+
+exports.getPost = (session, userId) => {
+
+	return session.run('MATCH (post:Post) WHERE post.userId={userId} RETURN post', {
+		userId: userId
+	})
+	.then(result => {
+		return result.records;
+	})
+	.catch(err => {
+		return new Error(err);
 	})
 }
