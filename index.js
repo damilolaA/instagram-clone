@@ -1,6 +1,6 @@
 require('dotenv').config();
-var app = require('./src/server/server.js'),
-	port = require('./config/config.js').port;
+const app     = require('./src/server/server.js'),
+	   { port } = require('./config/config.js');
 
 console.log('Application started on port ' + port);
 
