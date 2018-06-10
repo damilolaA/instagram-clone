@@ -8,5 +8,7 @@ Router.route('/')
 	.post(authController.verifyUser, uploadImage, postController.addPost)
 	.get(authController.verifyUser, postController.getPost)
 
+Router.route('/addComment')
+	.post(authController.verifyUser, postController.addComment)
 
 module.exports = Router;

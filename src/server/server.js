@@ -19,7 +19,7 @@ io.on('connection', (socket) => {
     socket.on('disconnect', () => {
         console.log('socket disconnected');
     })
-})
+});
 
 app.use((err, req, res, next) => {
     res.status(err.status).send(err.message);

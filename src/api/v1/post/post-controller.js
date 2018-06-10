@@ -69,3 +69,22 @@ exports.getPost = (req, res, next) => {
 			return next({status: 400, message: err});
 		})
 }
+
+exports.addComment = (req, res, next) => {
+
+	const { postId, comment } = req.body,
+				{ id } = req.user;
+				
+	postModel.addComment(session, postId, comment, id)
+		.then(result => {
+			console.log(result);
+			let data = result.records[0].get('p'),
+				  { properties } = data;
+
+			res.status(200).json(data);
+		})
+		.catch(error => {
+			console.log(error);
+			return next({status:400, message:"Could not add comment"});
+		});
+}
