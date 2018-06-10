@@ -34,6 +34,6 @@ exports.verifyUser = (req, res, next) => {
 			next();
 		})
 		.catch(err => {
-			return next(new Error(err));
+			return next({status:400, message:"Session expired, please login"});
 		})
 }

@@ -1,26 +1,46 @@
-const postModel = require('./post-model.js'),
-			session = require('../initializeNeo4j.js');
+const cloudinary = require('cloudinary'),
+			postModel = require('./post-model.js'),
+			session = require('../initializeNeo4j.js'),
+			{
+				CLOUDINARY_NAME, CLOUDINARY_KEY, CLOUDINARY_SECRET
+			} = require('../../../../config/config.js');
+
+cloudinary.config({
+	cloud_name: CLOUDINARY_NAME,
+	api_key: CLOUDINARY_KEY,
+	api_secret: CLOUDINARY_SECRET
+});
 
 exports.addPost = (req, res, next) => {
 
 	const postBody = req.body;
 
-	if(req.file) {	
-		let { path } = req.file;
+	if(req.file) {
+		cloudinary.uploader.upload(req.file.path, (response) => {
+			if(response) {
+				let imageUrl = response.secure_url;
 
-		postBody.image = path;
+				postBody.image = imageUrl;
+
+				const { image, user, caption } = postBody;	
+
+				postModel.addPost(session, user, image, caption)
+					.then(result => {
+						let { properties } = result;
+
+						res.status(200).json(properties);
+					})
+					.catch(err => {
+						console.log(err);
+						return next({status: 400, message: 'Post could not be added'});
+					})
+			} else {
+				return next({status: 400, message: "Error uploading to cloudinary"});
+			}
+		})
+	} else {
+		return next({status:400, message: "please select a picture to post"});
 	}
-
-	const { image, user, caption } = postBody;	
-
-	postModel.addPost(session, user, image, caption)
-		.then(result => {
-			res.status(200).json(result)
-		})
-		.catch(err => {
-			console.log(err);
-			return next({status: 400, message: 'Post could not be added'});
-		})
 }
 
 exports.getPost = (req, res, next) => {
@@ -38,7 +58,7 @@ exports.getPost = (req, res, next) => {
 
 			result.forEach((post) => {
 				let info = post.get('post');
-				
+
 				let { properties } = info;
 
 				data.push(properties);
