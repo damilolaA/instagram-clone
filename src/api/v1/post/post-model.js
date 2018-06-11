@@ -23,6 +23,7 @@ exports.getPost = (session, userId) => {
 		userId: userId
 	})
 	.then(result => {
+		console.log(result);
 		return result.records;
 	})
 	.catch(err => {
@@ -32,7 +33,7 @@ exports.getPost = (session, userId) => {
 
 exports.addComment = (session, postId, comment, userId) => {
 
-	return session.run("MATCH (p:Post) WHERE p.id={postId} SET p.comments=p.comments + '[{ comment:{{comment}}, userId:{{userId}} }]' RETURN p", {
+	return session.run('MATCH (p:Post) WHERE p.id={postId} SET p.comments=p.comments + "{ comment:{comment}, userId:{userId} }" RETURN p', {
 		postId: postId,
 		comment: comment,
 		userId: userId

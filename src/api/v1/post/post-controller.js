@@ -55,7 +55,7 @@ exports.getPost = (req, res, next) => {
 		.then(result => {
 			
 			let data = [];
-
+			console.log(result);
 			result.forEach((post) => {
 				let info = post.get('post');
 
