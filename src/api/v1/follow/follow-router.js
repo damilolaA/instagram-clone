@@ -3,7 +3,7 @@ const express = require('express'),
 			authController   = require('../auth/auth-controller.js'),    
 			followController = require('./follow-controller.js');
 
-Router.route('/:id')
+Router.route('/')
 	.post(authController.verifyUser, followController.follow);
 
 module.exports = Router;

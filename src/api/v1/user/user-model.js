@@ -18,7 +18,7 @@ exports.registerUser = (session, username, email, password) => {
 		if(!_.isEmpty(result.records)) {
 			throw new Error('username or email address already in use');
 		} else {
-			return session.run('CREATE (user:User { id:{id}, username:{username}, email:{email}, password:{password}, date:{date} }) RETURN user', {
+			return session.run('CREATE (user:User { id:{id}, username:{username}, email:{email}, password:{password}, following:0, date:{date} }) RETURN user', {
 				id: uuid4(),
 				username: username,
 				email: email,

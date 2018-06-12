@@ -1,14 +1,9 @@
-const number = 0;
 
 exports.follow = (session, userId, id) => {
-	let number = number++;
-	console.log(number);
 	
-	return session.run(`MATCH (u:User { id:{userId} }) (m:User { id:{id} }) CREATE (u)-[:FOLLOW]->m 
-		SET u.following = {number} RETURN u`, {
+	return session.run('MATCH (u:User { id:{userId} }), (m:User { id:{id} }) MERGE (u)-[f:FOLLOW]->(m) SET u.following = u.following + 1  RETURN u', {
 		userId: userId,
-		id: id,
-		number: number
+		id: id
 	})
 	.then(result => {
 		return result;
