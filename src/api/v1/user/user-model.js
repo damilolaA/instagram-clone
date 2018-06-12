@@ -37,3 +37,16 @@ exports.registerUser = (session, username, email, password) => {
 }
 
 
+exports.getUsers = (session) => {
+	return session.run('MATCH (u: User) RETURN u')
+		.then(result => {
+			if(!_.isEmpty(result.records)) {
+				return result.records;
+			}
+		})
+		.catch(error => {
+			return error;
+		});
+}
+
+

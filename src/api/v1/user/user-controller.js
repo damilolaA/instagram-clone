@@ -45,4 +45,22 @@ exports.user = (req, res, next) => {
 	res.status(200).json(req.user);
 }
 
+exports.getUsers = (req, res, next) => {
+
+	let data = [];
+
+	userModel.getUsers(session)
+		.then(result => {
+			result.forEach((record) => {
+				let userDetails = record.get('u').properties;
+
+				data.push(userDetails);
+			})
+			res.status(200).json(data);
+		})
+		.catch(err => {
+			return next({status: 400, message: "Could not fetch all users"});
+		});
+}
+
 

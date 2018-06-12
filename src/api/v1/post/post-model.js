@@ -23,7 +23,6 @@ exports.getPost = (session, userId) => {
 		userId: userId
 	})
 	.then(result => {
-		console.log(result);
 		return result.records;
 	})
 	.catch(err => {

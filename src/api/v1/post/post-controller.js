@@ -53,13 +53,11 @@ exports.getPost = (req, res, next) => {
 
 	postModel.getPost(session, id)
 		.then(result => {
-			
 			let data = [];
-			console.log(result);
-			result.forEach((post) => {
-				let info = post.get('post');
 
-				let { properties } = info;
+			result.forEach((post) => {
+				let info = post.get('post'),
+				 { properties } = info;
 
 				data.push(properties);
 			})

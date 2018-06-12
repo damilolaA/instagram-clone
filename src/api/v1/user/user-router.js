@@ -9,5 +9,7 @@ Router.route('/')
 Router.route('/register')
 	.post(userController.register);
 
+Router.route('/users')
+	.get(userController.getUsers);
 
 module.exports = Router;
