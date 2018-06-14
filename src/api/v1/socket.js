@@ -14,10 +14,11 @@ exports.init = (server) => {
 
 const handleFollow = follow => {
 	follow.on('connection', client => {
-		console.log(client.handshake.query.user.username + " connected to the follow socket");
+		let { username } = client.handshake.query.user.properties;
+		console.log(username + " connected to the follow socket");
 
 		client.on('disconnecting', details => {
-			console.log(client.handshake.query.user.username + " disconnecting from follow socket");
+			console.log(username + " disconnecting from follow socket");
 		})
 	})
 }

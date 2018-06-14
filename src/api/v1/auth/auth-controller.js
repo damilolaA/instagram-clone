@@ -1,4 +1,5 @@
-const auth = require('./auth.js'),
+const jwt = require('jsonwebtoken'),
+			auth = require('./auth.js'),
 			session = require('../initializeNeo4j.js');
 
 exports.login = (req, res, next) => {
@@ -45,6 +46,7 @@ exports.socketAuthHandshake = (socket, next) => {
 	let decodeToken = jwt.decode(token);
 
 	if(decodeToken) {
+		console.log(decodeToken.id);
 		userId = decodeToken.id;
 	} else {
 		return next({status: 400, message: 'You are not authorized to access this socket'});
@@ -52,9 +54,10 @@ exports.socketAuthHandshake = (socket, next) => {
 
 	auth.findUserById(session, userId)
 		.then(result => {
-			let user = result.get('u');
-			if(user) {
-				console.log(user);
+			let user = result[0].get('u'),
+				{ properties } = user;
+
+			if(properties) {
 				socket.handshake.query.user = user;
 				return next();
 			} else {
