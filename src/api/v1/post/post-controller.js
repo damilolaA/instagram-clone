@@ -20,6 +20,7 @@ exports.addPost = (req, res, next) => {
 			if(response) {
 				let imageUrl = response.secure_url;
 
+				postBody.user = req.user.id;
 				postBody.image = imageUrl;
 
 				const { image, user, caption } = postBody;	
@@ -76,7 +77,7 @@ exports.addComment = (req, res, next) => {
 	postModel.addComment(session, postId, comment, id)
 		.then(result => {
 			console.log(result);
-			let data = result.records[0].get('p'),
+			let data = result.records[0].get('c'),
 				  { properties } = data;
 
 			res.status(200).json(data);

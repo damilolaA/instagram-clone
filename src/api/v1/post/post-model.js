@@ -2,7 +2,7 @@ const uuid = require('uuid/v4');
 
 exports.addPost = (session, userId, imagePath, caption) => {
 
-	return session.run('CREATE (post:Post {id:{id}, userId:{userId}, imagePath:{imagePath}, caption:{caption}, comments:[], date: {date}}) RETURN post', {
+	return session.run('CREATE (post:Post {id:{id}, userId:{userId}, imagePath:{imagePath}, caption:{caption}, comments:["{}"], date: {date}}) RETURN post', {
 		id: uuid(),
 		userId: userId,
 		imagePath: imagePath,
@@ -13,7 +13,7 @@ exports.addPost = (session, userId, imagePath, caption) => {
 		return post.records[0].get('post');
 	})
 	.catch(err => {
-		return new Error(err);
+		return err;
 	})
 }
 
@@ -32,7 +32,7 @@ exports.getPost = (session, userId) => {
 
 exports.addComment = (session, postId, comment, userId) => {
 
-	return session.run('MATCH (p:Post) WHERE p.id={postId} SET p.comments=p.comments + "{ comment:{comment}, userId:{userId} }" RETURN p', {
+	return session.run('MATCH (u:User {id: {userId}}), (p:Post {id: {postId}}) CREATE (u)-[c:Comments {comment: {comment}}]->(p) RETURN c', {
 		postId: postId,
 		comment: comment,
 		userId: userId
