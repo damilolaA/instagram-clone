@@ -65,3 +65,19 @@ exports.loginUser = (session, username, plainPassword) => {
 		return new Error(err);
 	})
 }
+
+exports.findUserById = (session, userId) => {
+	return session.run('MATCH (u:User { id:{userId} }) RETURN u', {
+		userId: userId
+	})
+	.then(result => {
+		if(!_.isEmpty(result.records)) {
+			return result.records;
+		} else {
+			return new Error('no user found for user id');
+		}
+	})
+	.catch(error => {
+		return error;
+	})
+}

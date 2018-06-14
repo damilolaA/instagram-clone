@@ -37,3 +37,31 @@ exports.verifyUser = (req, res, next) => {
 			return next({status:400, message:"Session expired, please login"});
 		})
 }
+
+exports.socketAuthHandshake = (socket, next) => {
+	let token = socket.handshake.query.token,
+			userId;
+
+	let decodeToken = jwt.decode(token);
+
+	if(decodeToken) {
+		userId = decodeToken.id;
+	} else {
+		return next({status: 400, message: 'You are not authorized to access this socket'});
+	}
+
+	auth.findUserById(session, userId)
+		.then(result => {
+			let user = result.get('u');
+			if(user) {
+				console.log(user);
+				socket.handshake.query.user = user;
+				return next();
+			} else {
+				return next({status:400, message:'You are not authorized to access this socket'});
+			}
+		})
+		.catch(error => {
+			console.log(error);
+		})
+}
