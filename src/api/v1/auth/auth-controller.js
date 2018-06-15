@@ -46,7 +46,6 @@ exports.socketAuthHandshake = (socket, next) => {
 	let decodeToken = jwt.decode(token);
 
 	if(decodeToken) {
-		console.log(decodeToken.id);
 		userId = decodeToken.id;
 	} else {
 		return next({status: 400, message: 'You are not authorized to access this socket'});
