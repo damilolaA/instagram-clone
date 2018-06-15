@@ -1,5 +1,6 @@
 const socket = require('socket.io'),
 			authController = require('./auth/auth-controller.js'),
+			postController = require('./post/post-controller.js'),
 			followController = require('./follow/follow-controller.js');
 
 exports.init = (server) => {
@@ -7,10 +8,13 @@ exports.init = (server) => {
 
 	let io = socket.listen(server),
 	follow = io.of('/follow');
+	like   = io.of('/like');
 
 	follow.use(authController.socketAuthHandshake);
+	like.use(authController.socketAuthHandshake);
 
 	handleFollow(follow);
+	handleLikes(like);
 }
 
 const handleFollow = follow => {
@@ -35,5 +39,20 @@ const handleFollow = follow => {
 					return console.log(error);
 				});
 		});
+	})
+}
+
+const handleLikes = like => {
+	like.on('connection', client => {
+		let { username, id } = client.handshake.query.user.properties;
+		console.log(username + " has connected to like socket");
+
+		client.on('disconnecting', details => {
+			console.log(username + " is disconnecting from like socket");
+		});
+
+		client.on('like', data => {
+			console.log(data);
+		})
 	})
 }

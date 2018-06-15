@@ -76,7 +76,7 @@ exports.addComment = (req, res, next) => {
 				
 	postModel.addComment(session, postId, comment, id)
 		.then(result => {
-			console.log(result);
+		
 			let data = result.records[0].get('c'),
 				  { properties } = data;
 
@@ -86,4 +86,16 @@ exports.addComment = (req, res, next) => {
 			console.log(error);
 			return next({status:400, message:"Could not add comment"});
 		});
+}
+
+exports.likePost = (postId, userId) => {
+	return new Promise((resolve, reject) => {
+		postModel.likePost(session)
+		 .then(result => {
+			resolve(result)
+		 })
+		 .catch(error => {
+		 	reject(error)
+		 })
+	});
 }
