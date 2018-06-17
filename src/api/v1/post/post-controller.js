@@ -12,7 +12,6 @@ cloudinary.config({
 });
 
 exports.addPost = (req, res, next) => {
-
 	const postBody = req.body;
 
 	if(req.file) {
@@ -45,7 +44,6 @@ exports.addPost = (req, res, next) => {
 }
 
 exports.getPost = (req, res, next) => {
-
 	if(!req.user) {
 		return next({status: 400, message: 'token expired, please login'});
 	}
@@ -70,7 +68,6 @@ exports.getPost = (req, res, next) => {
 }
 
 exports.addComment = (req, res, next) => {
-
 	const { postId, comment } = req.body,
 				{ id } = req.user;
 				
@@ -90,7 +87,7 @@ exports.addComment = (req, res, next) => {
 
 exports.likePost = (postId, userId) => {
 	return new Promise((resolve, reject) => {
-		postModel.likePost(session)
+		postModel.likePost(session, postId, userId)
 		 .then(result => {
 			resolve(result)
 		 })

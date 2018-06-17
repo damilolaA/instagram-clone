@@ -52,7 +52,18 @@ const handleLikes = like => {
 		});
 
 		client.on('like', data => {
-			console.log(data);
+			let { postId, userId } = data;
+
+			postController.likePost(postId, userId)
+				.then(response => {
+					//console.log(response.records[0]);
+					let { properties } = response.records[0].get('p');
+					
+					client.emit('liking', properties);
+				})
+				.catch(error => {
+					console.log(error);
+				})
 		})
 	})
 }
