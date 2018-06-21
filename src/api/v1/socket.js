@@ -36,7 +36,7 @@ const handleFollow = follow => {
 					client.emit('info', properties);
 				})
 				.catch(error => {
-					return console.log(error);
+					return console.log(error); 
 				});
 		});
 	})
@@ -56,7 +56,7 @@ const handleLikes = like => {
 
 			postController.likePost(postId, userId)
 				.then(response => {
-					//console.log(response.records[0]);
+					
 					let { properties } = response.records[0].get('p');
 					
 					client.emit('liking', properties);

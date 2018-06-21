@@ -4,12 +4,14 @@ var http    = require('http'),
     server  = http.Server(app),
     bps     = require('body-parser'),
     morgan  = require('morgan'),
+    cors    = require('cors'),
     socket  = require('../api/v1/socket.js'),
     api     = require('../api/api.js');
 
 app.use(bps.json());
 app.use(bps.urlencoded({ extended: true }));
 
+app.use(cors());
 app.use(morgan('dev'));
 
 app.use('/api/v1/', api);

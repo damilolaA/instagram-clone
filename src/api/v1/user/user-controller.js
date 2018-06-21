@@ -32,7 +32,7 @@ exports.register = (req, res, next) => {
 				})
 		})
 		.catch(error => {
-			return next({status: 400, message: "Email or Username is already in use"});
+			return next({status: 500, message: "Email or Username is already in use"});
 		})
 }
 

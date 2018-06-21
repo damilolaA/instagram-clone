@@ -46,14 +46,14 @@ exports.loginUser = (session, username, plainPassword) => {
 	})
 	.then(result => {
 		if(_.isEmpty(result.records)) {
-			throw {message: 'Username does not exist', status:400};
+			return {status:400, message:'username and/or password is incorrect'};
 		} else {
 
 			let user = result.records[0].get('user'),
 			{ password, id } = user.properties;
 
 			if(!authenticatePassword(plainPassword, password)) {
-				throw {message: "password is not correct", status:403}
+				return {status:400, message:'username and/or password is incorrect'};
 			}
 
 			let token = signToken(id);

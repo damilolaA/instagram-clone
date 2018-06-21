@@ -15,10 +15,13 @@ exports.login = (req, res, next) => {
 
 	auth.loginUser(session, username, password)
 		.then(result => {
+			if(result.hasOwnProperty('message')) {
+				return next({status:400, message:'Error authenticating user'});
+			}
 			res.status(200).json(result);
 		})
 		.catch(error => {
-			return next({status: 400, message: 'Error authenticating user'});
+			return next({status:400, message:'Error authenticating user'});
 		})
 }
 
